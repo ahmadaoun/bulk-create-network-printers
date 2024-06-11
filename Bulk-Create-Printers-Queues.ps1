@@ -49,6 +49,24 @@ if (Test-Path "HKCU:\Printers\Connections\,,`$server,`$PrinterName") {
     $detectScript | Out-File -FilePath $detectPath -Encoding utf8
 }
 
+# Function to create .intunewin file using IntuneWinAppUtil.exe
+function Create-IntuneWinFile {
+    param (
+        [string]$sourceFolder,
+        [string]$setupFile,
+        [string]$outputFolder
+    )
+
+    $intuneWinAppUtilPath = "$PSScriptRoot\IntuneWinAppUtil.exe" # Path to IntuneWinAppUtil.exe
+    $arguments = @(
+        "-c", $sourceFolder,
+        "-s", $setupFile,
+        "-o", $outputFolder
+    )
+    
+    & $intuneWinAppUtilPath @arguments
+}
+
 # Get the list of printers from a CSV file
 $data = Import-Csv -Path "$PSScriptRoot\Printers.csv"
 
@@ -71,4 +89,8 @@ foreach ($entry in $data) {
     # Create scripts
     Create-InstallScript -installPath $installPath -server $server -printer $printer
     Create-DetectScript -detectPath $detectPath -server $server -printer $printer
+
+    # Create .intunewin file
+    $outputFolder = "$PSScriptRoot\IntuneWinFiles"
+    Create-IntuneWinFile -sourceFolder $folderPath -setupFile $installPath -outputFolder $folderPath
 }

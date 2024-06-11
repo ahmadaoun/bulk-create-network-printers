@@ -1,2 +1,3 @@
 printers,servers
-colour-print-queue,printserver01.m365.local
+colour-print-queue01,printserver01.m365.local
+colour-print-queue02,printserver02.m365.local
